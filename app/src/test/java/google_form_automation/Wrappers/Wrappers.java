@@ -1,29 +1,27 @@
 package google_form_automation.Wrappers;
 
-import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
-
 import org.apache.commons.io.FileUtils;
 
 public class Wrappers {
+
+    
     
     public static void click(WebElement elementToClick, WebDriver driver){
         if(elementToClick.isDisplayed()){
@@ -34,6 +32,8 @@ public class Wrappers {
     }
 
     public static void sendKeys(WebDriver driver, WebElement inputBox, String keysToSend){
+        // WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(0));
+        // wait.until(ExpectedConditions.elementToBeClickable(inputBox));
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].scrollIntoView();", inputBox);
         inputBox.clear();
@@ -104,9 +104,20 @@ public class Wrappers {
 
     public static String capture(WebDriver driver) throws IOException{
         File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        File dest = new File(System.getProperty("user.dir")+File.separator+"reports"+System.currentTimeMillis()+".png");
-        String errflPath = dest.getAbsolutePath();
-        FileUtils.copyFile(srcFile, dest);
-        return errflPath;
+        String reportsFolder = System.getProperty("user.dir")+File.separator+"reports";
+        File directory = new File(reportsFolder);
+        if(!directory.exists()){
+            directory.mkdirs();
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        long formattedTimeStamp = Long.parseLong(now.format(formatter));
+
+        String screenShotPath = reportsFolder+File.separator+formattedTimeStamp+".png";
+        File destFile = new File(screenShotPath);
+        FileUtils.copyFile(srcFile, destFile);
+        System.out.println("Screenshot path: "+ screenShotPath);
+        return screenShotPath;
     }
 }

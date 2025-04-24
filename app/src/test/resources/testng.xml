@@ -3,7 +3,7 @@
 <suite name="Test Suite for Buildout">
     <test name = "Test Cases for Buildout">
        <classes>          
-            <class name="google_form_automation.TestCases"></class>
+            <class name="google_form_automation.tests.testCase01"></class>
         </classes>
     </test>
 </suite>
